@@ -56,14 +56,29 @@ class OrderFactory {
         virtual ~OrderFactory();
 };
 
-class MarketOrderFactory : public OrderFactory {}
+class MarketOrderFactory : public OrderFactory {
+ public:
+        std::unique_ptr<Order> createOrder(int, double, int) override;
+};
 
+class LimitOrderFactory : public OrderFactory {
+ public:
+        std::unique_ptr<Order> createOrder(int, double, int) override;
+};
 
+class OrderMatchingStrategy {
+ public:
+        virtual void matchOrders(std::vector<std::shared_ptr<Order>>&,
+            std::vector<std::shared_ptr<Order>>&) = 0;
+        virtual ~OrderMatchingStrategy();
+};
 
-
+class PriceTimeOrderMatchingStrategy : public OrderMatchingStrategy {
+ public:
+        void matchOrders(std::vector<std::shared_ptr<Order>>&,
+            std::vector<std::shared_ptr<Order>>&) override;
+};
 
 }  // namespace TradingEngine
-
-
 
 #endif  // ORDER_H_

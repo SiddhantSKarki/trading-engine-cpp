@@ -1,6 +1,7 @@
 // Copyright 2024 @ Siddhant S. Karki
 #include <format>
 #include <algorithm>
+#include <functional>
 #include <stdexcept>
 #include "../include/order.h"
 
@@ -10,6 +11,10 @@ using TradingEngine::OrderType;
 using TradingEngine::MarketOrder;
 using TradingEngine::LimitOrder;
 using TradingEngine::OrderFactory;
+using TradingEngine::MarketOrderFactory;
+using TradingEngine::LimitOrderFactory;
+using TradingEngine::OrderMatchingStrategy;
+using TradingEngine::PriceTimeOrderMatchingStrategy;
 
 
 Order::Order(int id, double p, int q) :
@@ -63,6 +68,38 @@ std::string LimitOrder::getOrderTypeStr() const {
 }
 
 OrderFactory::~OrderFactory() {}
+
+
+std::unique_ptr<Order> MarketOrderFactory::createOrder(int trader_id,
+    double price, int quantity) {
+        return std::make_unique<MarketOrder>(trader_id, price, quantity);
+}
+
+std::unique_ptr<Order> LimitOrderFactory::createOrder(int trader_id,
+    double price, int quantity) {
+        return std::make_unique<LimitOrder>(trader_id, price, quantity);
+}
+
+OrderMatchingStrategy::~OrderMatchingStrategy() {}
+
+void PriceTimeOrderMatchingStrategy::matchOrders (
+    std::vector<std::shared_ptr<Order>>& buyOrders, 
+        std::vector<std::shared_ptr<Order>>& sellOrders) {
+    std::vector<std::shared_ptr<Order>> matchOrders;
+    for (auto sellOrder = sellOrders.begin();
+        sellOrder != sellOrders.end(); ++sellOrder) {
+        for (auto it = buyOrders.begin(); it != buyOrders.end();) {
+            if ((*sellOrder)->getPrice() <= (*it)->getPrice()) {
+                matchOrders.push_back(*it);
+                it = buyOrders.erase(it);
+            } else {
+                ++it;
+            }
+        }
+    }
+    // Insert elements from matchOrders before the end
+    buyOrders.insert(buyOrders.end(), matchOrders.begin(), matchOrders.end());
+}
 
 
 
