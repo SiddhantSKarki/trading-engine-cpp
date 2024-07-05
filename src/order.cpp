@@ -45,9 +45,8 @@ void Order::reduceQuantity(int amount) {
     if (amount > 0 && amount <= quantity) {
         quantity -= amount;
     } else {
-        throw std::out_of_range {
-            std::format("Amount: {:d} out of range", amount)
-        };
+        throw std::out_of_range(
+            std::format("Amount: {:d} out of range", amount));
     }
 }
 
