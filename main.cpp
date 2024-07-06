@@ -1,6 +1,6 @@
 // Copyright 2024 @Siddhnat S. Karki
-#include <iostream>
 #include <format>
+#include <iostream>
 #include "./include/order.h"
 
 

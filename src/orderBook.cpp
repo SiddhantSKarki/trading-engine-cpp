@@ -1,7 +1,7 @@
 // Copyright Siddhant S. Karki @2024
-#include "../include/orderBook.h"
-#include <iostream>
 #include <format>
+#include <iostream>
+#include "../include/orderBook.h"
 
 using TradingEngine::OrderBook;
 using TradingEngine::OrderType;
